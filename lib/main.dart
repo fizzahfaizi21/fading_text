@@ -136,6 +136,7 @@ class FadingTextAnimation extends StatefulWidget {
 
 class _FadingTextAnimationState extends State<FadingTextAnimation> {
   bool _isVisible = true;
+  Color _textColor = Colors.black;
 
   void toggleVisibility() {
     setState(() {
@@ -143,8 +144,19 @@ class _FadingTextAnimationState extends State<FadingTextAnimation> {
     });
   }
 
+  void changeColor(Color color) {
+    setState(() {
+      _textColor = color;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Make sure text color is visible in dark mode
+    if (widget.isDarkMode && _textColor == Colors.black) {
+      _textColor = Colors.white;
+    }
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -154,7 +166,7 @@ class _FadingTextAnimationState extends State<FadingTextAnimation> {
             duration: widget.duration,
             child: Text(
               widget.title,
-              style: TextStyle(fontSize: 24),
+              style: TextStyle(fontSize: 24, color: _textColor),
             ),
           ),
           SizedBox(height: 20),
@@ -167,12 +179,69 @@ class _FadingTextAnimationState extends State<FadingTextAnimation> {
             widget.subtitle,
             style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
           ),
-          SizedBox(height: 30),
-          FloatingActionButton(
-            onPressed: toggleVisibility,
-            child: Icon(Icons.play_arrow),
-            tooltip: 'Toggle Visibility',
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: Icon(Icons.color_lens),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Choose Text Color'),
+                        content: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              colorButton(Colors.red, 'Red'),
+                              colorButton(Colors.blue, 'Blue'),
+                              colorButton(Colors.green, 'Green'),
+                              colorButton(Colors.orange, 'Orange'),
+                              colorButton(Colors.purple, 'Purple'),
+                              colorButton(
+                                  widget.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black,
+                                  'Default'),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                tooltip: 'Change Text Color',
+              ),
+              SizedBox(width: 20),
+              FloatingActionButton(
+                onPressed: toggleVisibility,
+                child: Icon(Icons.play_arrow),
+                tooltip: 'Toggle Visibility',
+              ),
+            ],
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget colorButton(Color color, String name) {
+    return TextButton(
+      onPressed: () {
+        changeColor(color);
+        Navigator.of(context).pop();
+      },
+      child: Row(
+        children: [
+          Container(
+            width: 24,
+            height: 24,
+            color: color,
+            margin: EdgeInsets.only(right: 8),
+          ),
+          Text(name),
         ],
       ),
     );
