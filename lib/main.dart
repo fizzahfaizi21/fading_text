@@ -161,25 +161,43 @@ class _FadingTextAnimationState extends State<FadingTextAnimation> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // Text above the image
           AnimatedOpacity(
             opacity: _isVisible ? 1.0 : 0.0,
             duration: widget.duration,
-            child: Text(
-              widget.title,
-              style: TextStyle(fontSize: 24, color: _textColor),
+            child: Column(
+              children: [
+                Text(
+                  widget.title,
+                  style: TextStyle(fontSize: 24, color: _textColor),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  widget.isDarkMode ? 'Dark Mode Enabled' : 'Light Mode Enabled',
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  widget.subtitle,
+                  style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                ),
+              ],
             ),
           ),
           SizedBox(height: 20),
-          Text(
-            widget.isDarkMode ? 'Dark Mode Enabled' : 'Light Mode Enabled',
-            style: TextStyle(fontSize: 16),
-          ),
-          SizedBox(height: 10),
-          Text(
-            widget.subtitle,
-            style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+          // Image in the middle
+          AnimatedOpacity(
+            opacity: _isVisible ? 1.0 : 0.0,
+            duration: widget.duration,
+            child: Image.asset(
+              'assets/images/pexels-pixabay-206959.jpg', // Replace with your image path
+              width: 150,
+              height: 150,
+              fit: BoxFit.cover,
+            ),
           ),
           SizedBox(height: 20),
+          // Buttons for color and visibility
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
