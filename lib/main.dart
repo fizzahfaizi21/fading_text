@@ -20,9 +20,17 @@ class FadingTextAnimation extends StatefulWidget {
 
 class _FadingTextAnimationState extends State<FadingTextAnimation> {
   bool _isVisible = true;
+  Color _textColor = Colors.black;
+
   void toggleVisibility() {
     setState(() {
       _isVisible = !_isVisible;
+    });
+  }
+
+  void changeColor(Color color) {
+    setState(() {
+      _textColor = color;
     });
   }
 
@@ -31,6 +39,36 @@ class _FadingTextAnimationState extends State<FadingTextAnimation> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Fading Text Animation'),
+        actions: [
+          PopupMenuButton<Color>(
+            onSelected: changeColor,
+            itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem(
+                  value: Colors.red,
+                  child: Text('Red'),
+                ),
+                PopupMenuItem(
+                  value: Colors.blue,
+                  child: Text('Blue'),
+                ),
+                PopupMenuItem(
+                  value: Colors.green,
+                  child: Text('Green'),
+                ),
+                PopupMenuItem(
+                  value: Colors.orange,
+                  child: Text('Orange'),
+                ),
+                PopupMenuItem(
+                  value: Colors.purple,
+                  child: Text('Purple'),
+                ),
+              ];
+            },
+            icon: Icon(Icons.color_lens),
+          ),
+        ],
       ),
       body: Center(
         child: AnimatedOpacity(
@@ -38,7 +76,7 @@ class _FadingTextAnimationState extends State<FadingTextAnimation> {
           duration: Duration(seconds: 1),
           child: Text(
             'Hello, Flutter!',
-            style: TextStyle(fontSize: 24),
+            style: TextStyle(fontSize: 24, color: _textColor),
           ),
         ),
       ),
