@@ -142,6 +142,8 @@ class _FadingTextAnimationState extends State<FadingTextAnimation>
   List<ConfettiParticle> _confetti = [];
   AnimationController? _confettiController;
   bool _showConfetti = false;
+  bool _hasRoundedCorners = false;
+  double _cornerRadius = 0;
 
   @override
   void initState() {
@@ -173,6 +175,13 @@ class _FadingTextAnimationState extends State<FadingTextAnimation>
       _showConfetti = true;
       _generateConfetti();
       _confettiController!.forward(from: 0.0);
+    });
+  }
+
+  void toggleCornerRadius() {
+    setState(() {
+      _hasRoundedCorners = !_hasRoundedCorners;
+      _cornerRadius = _hasRoundedCorners ? 20.0 : 0.0;
     });
   }
 
@@ -217,6 +226,7 @@ class _FadingTextAnimationState extends State<FadingTextAnimation>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Text above the image
               AnimatedOpacity(
                 opacity: _isVisible ? 1.0 : 0.0,
                 duration: widget.duration,
@@ -236,6 +246,45 @@ class _FadingTextAnimationState extends State<FadingTextAnimation>
                 style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
               ),
               SizedBox(height: 20),
+              // Image in the middle with animated border radius
+              AnimatedOpacity(
+                opacity: _isVisible ? 1.0 : 0.0,
+                duration: widget.duration,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(_cornerRadius),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: widget.isDarkMode ? Colors.white : Colors.black,
+                        width: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(_cornerRadius),
+                    ),
+                    child: Image.asset(
+                      'assets/images/pexels-pixabay-206959.jpg', // Replace with your image path
+                      width: 150,
+                      height: 150,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              // Toggle for rounded corners
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Rounded Corners:'),
+                  Switch(
+                    value: _hasRoundedCorners,
+                    onChanged: (value) {
+                      toggleCornerRadius();
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+              // Buttons for color and visibility
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
